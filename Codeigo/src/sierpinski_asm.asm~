@@ -20,13 +20,9 @@ sierpinski_asm:
 													;coef = r12
 
 
-.cicloRows:
+.ciclo:
 
-
-	.cicloCol:
-
-
-		.calcularCoef:
+	.calcularCoef:
 
 		
 
