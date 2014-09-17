@@ -9,8 +9,6 @@ section .text
 ;		int tamx, int tamy,
 ;		int offsetx, int offsety);
 
-;%define limpUp 0x00000000FFFFFFFF
-
 cropflip_asm:
 			
 			push rbp
@@ -22,51 +20,76 @@ cropflip_asm:
 			push r15
 			push rbx
 
-			;R9 tamx
-			;R10 tamy
-			;R11 final del archivo destino
-			;R12 offsetx en BYTES
-			;R13 offsety
-			;R14 Principio cacho a modificar
-			
+			;la pila queda desalineada, pero como no
+			;llamo a ninguna funcion esta todo bien (creo)
+
+			;Los parametros que te pasan por
+			;la pila se acceden asi:
+			;mov r64/r32/r16/r8, [rbp+8+i*8]
+			;siendo i el numero de parametro (empieza en 1)
+
+
+			;El primer parrafo de codigo modifica el puntero
+			;de la imagen destino para que apunte a donde
+			;hay que empezar a escribir, queda en R11:
+
 			mov eax, [rbp+24]
-			mov r10d, eax
-			mov rbx, 8589934591
-			and rax, rbx
-
-			xor r11, r11
-			mov r11d, [rbp+16]
-
+			mov rbx, 8589934591		;Ahora en cada and con rbx
+			and rax, rbx			;se va a limpiar la parte alta
+			xor r11, r11 			;del registro, es necesario
+			mov r11d, [rbp+16]		;para hacer aritmetica de punteros
 			mul r11
 			shl rax, 2
 			add rax, rsi
 			mov r11, rax
-			mov rcx, [rbp+16]
-			shl rcx, 2
-			sub r11, rcx
+			mov r10d, [rbp+16]
+			shl r10d, 2
+			and r10, rbx
+			sub r11, r10
+
+			;Este parrafo modifica el puntero de
+			;la imagen fuente para que apunte a donde
+			;hay que empezar a leer, queda en R14:
 
 			mov r12d, [rbp+32]
 			mov r13d, [rbp+40]
-
 			and r8, rbx
 			and r12, rbx
 			and r13, rbx
 			mov rax, r8
-			
 			mul r13
 			shl r12, 2
 			add rax, r12
-			
 			mov r14, rax
 			add r14, rdi
 
-			mov edx, [rbp+16]
-			mov rbx, 8589934591
-			and rdx, rbx
-			shl rdx, 2
-			mov rbx, rdx
+			;Ahora se setean 3 contadores,
+			;Uno de bytes horizontales en RBX,
+			;uno de pixeles verticales en EAX
+			;y un backup del primero en R15
+			
 
-			mov eax, r10d
+			mov r15d, [rbp+16]
+			and r15, rbx
+			shl r15, 2
+			mov rbx, r15 		;RBX pierde su funcion de and
+			mov eax, [rbp+24]
+
+			;Aca se procesa la imagen:
+			;En cada iteracion se copian 16 bytes de
+			;una fila y se decrementa el contador RBX.
+			;Cuando este llega a 0 se restaura usando
+			;el backup y los punteros se actualizan
+			;para que apunten al primer elemento de
+			;la fila siguiente. Se decrementa el
+			;contador EAX, si llego a 0 significa que
+			;ya se copiaron todas las filas, y el
+			;programa para. Sino se loopea y se
+			;prosigue a copiar la fila siguiente.
+			;Notar que una imagen va leyendo las
+			;filas de arriba para abajo y la otra las
+			;va escribiendo de abajo para arriba.
+			;Ambos leen la fila de izquierda a derecha
 
 .fosconi:	movdqu xmm0, [r14]
 			movdqu [r11], xmm0
@@ -78,8 +101,8 @@ cropflip_asm:
 			sub r11, r9
 			sub r11, r9
 			add r14, r8
-			sub r14, rdx
-			mov rbx, rdx
+			sub r14, r15
+			mov rbx, r15
 			dec eax
 			cmp eax, 0
 			jne .fosconi
