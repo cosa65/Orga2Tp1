@@ -58,8 +58,8 @@ sierpinski_asm:
 .ciclo:
 
 
-		movdqu XMM0, XMM11					;XMM0 = {i,i,i,i}
-		movdqu XMM1, XMM12					;XMM1 = {j,j+1,j+2,j+3}
+		movdqa XMM0, XMM11					;XMM0 = {i,i,i,i}
+		movdqa XMM1, XMM12					;XMM1 = {j,j+1,j+2,j+3}
 
 		mulps XMM0, XMM10					;XMM0 = {i*255,i*255,i*255,i*255}
 		mulps XMM1, XMM10					;XMM1 = {j*255,(j+1)*255,(j+2)*255,(j+3)*255}
@@ -67,12 +67,12 @@ sierpinski_asm:
 		divps XMM0, XMM6					;XMM0 = {i*255/#filas,i*255/#filas,i*255/#filas,i*255/#filas}
 		divps XMM1, XMM7					;XMM1 = {j*255/#columnas,(j+1)*255/#columnas,(j+2)*255/#columnas,(j+3)*255/#columnas}
 
-		cvtps2dq XMM0, XMM0					;XMM0 = int({i*255/#filas,i*255/#filas,i*255/#filas,i*255/#filas})
-		cvtps2dq XMM1, XMM1					;XMM1 = int({j*255/#columnas,(j+1)*255/#columnas(j+2)*255/#columnas,(j+3)*255/#columnas})
+		cvttps2dq XMM0, XMM0				;XMM0 = int({i*255/#filas,i*255/#filas,i*255/#filas,i*255/#filas})
+		cvttps2dq XMM1, XMM1				;XMM1 = int({j*255/#columnas,(j+1)*255/#columnas(j+2)*255/#columnas,(j+3)*255/#columnas})
 
 		pxor XMM0,XMM1						;XMM0 = int({coef,coef1,coef2,coef3}) SIN DIVIDIR
 
-		cvtdq2ps XMM0, XMM0					;XMM0 = {coef,coef1,coef2,coef3} SIN DIVIDIR
+		cvttdq2ps XMM0, XMM0				;XMM0 = {coef,coef1,coef2,coef3} SIN DIVIDIR
 
 		pxor XMM2,XMM2
 		pxor XMM3,XMM3
@@ -105,19 +105,19 @@ sierpinski_asm:
 		cvtdq2ps XMM4, XMM4
 		cvtdq2ps XMM5, XMM5
 
-		movdqu XMM9, XMM0
+		movdqa XMM9, XMM0
 		shufps XMM9, XMM9, 0				;XMM9 = {coef3,coef3,coef3,coef3}
 		mulps XMM5, XMM9
 
-		movdqu XMM9, XMM0
+		movdqa XMM9, XMM0
 		shufps XMM9, XMM9, 85				;XMM9 = {coef2,coef2,coef2,coef2}
 		mulps XMM4, XMM9
 
-		movdqu XMM9, XMM0
+		movdqa XMM9, XMM0
 		shufps XMM9, XMM9, 170 				;XMM9 = {coef1,coef1,coef1,coef1}
 		mulps XMM3, XMM9
 
-		movdqu XMM9, XMM0
+		movdqa XMM9, XMM0
 		shufps XMM9, XMM9, 255				;XMM9 = {coef0,coef0,coef0,coef0}
 		mulps XMM2, XMM9
 
@@ -126,10 +126,10 @@ sierpinski_asm:
 		divps XMM3, XMM10
 		divps XMM2, XMM10
 
-		cvtps2dq XMM5, XMM5
-		cvtps2dq XMM4, XMM4
-		cvtps2dq XMM3, XMM3
-		cvtps2dq XMM2, XMM2
+		cvttps2dq XMM5, XMM5
+		cvttps2dq XMM4, XMM4
+		cvttps2dq XMM3, XMM3
+		cvttps2dq XMM2, XMM2
 
 		packusdw XMM5,XMM8
 		packusdw XMM4,XMM8
@@ -160,9 +160,6 @@ sierpinski_asm:
 	jne .ciclo							;caso NO llegue al final de fila
 
 										;caso SI llegue al final de fila
-
-
-
 
 	addps XMM11,XMM15					;XMM11 = {i+1,i+1,i+1,i+1}
 	inc r14d
