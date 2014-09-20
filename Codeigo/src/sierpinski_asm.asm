@@ -21,12 +21,7 @@ sierpinski_asm:
 	push rbp
 	mov rbp, rsp
 	push r12
-	push r13
 	push r14
-	sub rsp,8
-
-
-
 
 											;rdi = source			,(copia de)
 											;rsi = destino			,(copia a)
@@ -41,23 +36,24 @@ sierpinski_asm:
 	addps XMM12, [ceundotre]				;XMM12 = {j,j+1,j+2,j+3}
 
 	xor r14,r14
-	xor r13,r13
 	xor r12,r12
-	mov r13,rsi								;r13 = Lo que va a rax (*dst)
 
 
-	pxor XMM6,XMM6
-	movd XMM6, edx							;XMM6 = #cols
-	pxor XMM7,XMM7
-	movd XMM7, ecx							;XMM7 = #filas
+
 	pxor XMM8,XMM8							;XMM8 = 0
 
 	movdqu XMM14, [cuatrocuatros]			;XMM14 = {4,4,4,4}
 	movdqu XMM15, [cuatrounos]				;XMM15 = {1,1,1,1}
 	movdqu XMM10, [D55]						;XMM10 = {255,255,255,255}
 
+	pxor XMM6,XMM6
+	pxor XMM7,XMM7
+	movd XMM6, edx							;XMM6 = #cols
+	movd XMM7, ecx							;XMM7 = #filas
 	shufps XMM6, XMM6, 0					;XMM6 = {#filas,#filas,#filas,#filas}
 	shufps XMM7, XMM7, 0					;XMM7 = {#columnas,#columnas,#columnas,#columnas}
+	cvtdq2ps XMM6, XMM6	
+	cvtdq2ps XMM7, XMM7	
 
 .ciclo:
 
@@ -76,7 +72,7 @@ sierpinski_asm:
 
 		pxor XMM0,XMM1						;XMM0 = int({coef,coef1,coef2,coef3}) SIN DIVIDIR
 
-		cvtdq2ps XMM0, XMM0					;NOSEGIRUGORSGXMM0 = {j*255/#columnas,(j+1)*255/#columnas(j+2)*255/#columnas,(j+3)*255/#columnas}
+		cvtdq2ps XMM0, XMM0					;XMM0 = {coef,coef1,coef2,coef3} SIN DIVIDIR
 
 		pxor XMM2,XMM2
 		pxor XMM3,XMM3
@@ -84,9 +80,9 @@ sierpinski_asm:
 		pxor XMM5,XMM5
 
 		movd XMM2,[rdi]
-		movd XMM3,[rdi+1]
-		movd XMM4,[rdi+2]
-		movd XMM5,[rdi+3]
+		movd XMM3,[rdi+4]
+		movd XMM4,[rdi+8]
+		movd XMM5,[rdi+12]
 
 
 		punpcklbw XMM2, XMM8
@@ -141,9 +137,9 @@ sierpinski_asm:
 		packuswb XMM5,XMM8
 
 		movd [rsi],  XMM2
-		movd [rsi+1],XMM3
-		movd [rsi+2],XMM4
-		movd [rsi+3],XMM5
+		movd [rsi+4],XMM3
+		movd [rsi+8],XMM4
+		movd [rsi+12],XMM5
 
 
 
@@ -167,14 +163,13 @@ sierpinski_asm:
 	addps XMM11,XMM15					;XMM11 = {i+1,i+1,i+1,i+1}
 	inc r14d
 
+	pxor XMM12,XMM12
 	xor r12,r12
 	jmp .ciclo
 
 .fin:
 
-	add rsp,8
 	pop r14
-	pop r13
 	pop r12
 	pop rbp
     ret
