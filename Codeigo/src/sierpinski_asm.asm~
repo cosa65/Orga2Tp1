@@ -79,10 +79,15 @@ sierpinski_asm:
 		pxor XMM4,XMM4
 		pxor XMM5,XMM5
 
-		movd XMM2,[rdi]
-		movd XMM3,[rdi+4]
-		movd XMM4,[rdi+8]
-		movd XMM5,[rdi+12]
+		movdqu XMM2,[rdi]					;XMM2 = {p3,p2,p1,p0}		
+		shufps XMM3,XMM2, 64
+		shufps XMM3,XMM3, 3
+
+		shufps XMM4,XMM2, 128
+		shufps XMM4,XMM4, 3
+
+		shufps XMM5,XMM2, 192
+		shufps XMM5,XMM5, 3
 
 
 		punpcklbw XMM2, XMM8
@@ -131,16 +136,15 @@ sierpinski_asm:
 		packusdw XMM3,XMM8
 		packusdw XMM2,XMM8
 
-		packuswb XMM2,XMM8
-		packuswb XMM3,XMM8
-		packuswb XMM4,XMM8
-		packuswb XMM5,XMM8
+		packuswb XMM2,XMM8					;XMM2 = {0,0,0,p0}
+		packuswb XMM3,XMM8					;XMM3 = {0,0,0,p1}
+		packuswb XMM4,XMM8					;XMM4 = {0,0,0,p2}
+		packuswb XMM5,XMM8					;XMM5 = {0,0,0,p3}
 
-		movd [rsi],  XMM2
-		movd [rsi+1],XMM3
-		movd [rsi+2],XMM4
-		movd [rsi+3],XMM5
-
+		shufps XMM2, XMM3, 0				;XMM2 = {p1,p1,p0,p0}
+		shufps XMM4, XMM5, 0				;XMM4 = {p3,p3,p2,p2}
+		shufps XMM2, XMM4, 0x88				;XMM2 = {p3,p2,p1,0}
+		movdqu [rsi],  XMM2
 
 
 .ChequeoSiSeguir:
@@ -156,16 +160,18 @@ sierpinski_asm:
 	jne .ciclo							;caso NO llegue al final de fila
 
 										;caso SI llegue al final de fila
-	cmp r14d,ecx						;veo si llegue al final de la matriz
 
-	je .fin
+
+
 
 	addps XMM11,XMM15					;XMM11 = {i+1,i+1,i+1,i+1}
 	inc r14d
 
 	pxor XMM12,XMM12
 	xor r12,r12
-	jmp .ciclo
+	cmp r14d,ecx						;veo si llegue al final de la matriz
+
+	jne .ciclo
 
 .fin:
 
