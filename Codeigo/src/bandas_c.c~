@@ -13,8 +13,8 @@ void bandas_c (
 
 	int total;
 	int final;
-	for(int i = 0; i < n; i++){
-		for(int j = 0; j < m; j++){
+	for(int i = 0; i < m; i++){
+		for(int j = 0; j < n; j++){
 			total = src_matrix[i][j*4] + src_matrix[i][(j*4)+1] + src_matrix[i][(j*4)+2];
 
 			final = 255;		//caso default
