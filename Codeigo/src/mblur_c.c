@@ -39,11 +39,11 @@ void mblur_c    (
     int bd = 0;
     
 
-	for (int i = 0; i < (filas); i++)
+	for (int i = 0; i < filas; i++)
     {
-        for (int j = 0; j < (cols*4); j++)
+        for (int j = 8; j < (cols*4); j=j+4)
         {
-            if((j>=9)&&(j<((cols*4)-8))&&(i>=2)&&(i<(filas-2))){
+            if((j>=8)&&(j<((cols*4)-8))&&(i>=2)&&(i<(filas-2))){
                 r1 = src_matrix[i-2][j-8];
                 r2 = src_matrix[i-1][j-4];
                 r3 = src_matrix[i][j];
