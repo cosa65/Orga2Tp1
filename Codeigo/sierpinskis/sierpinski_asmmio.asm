@@ -6,6 +6,7 @@ D55: DD 255.0, 255.0, 255.0, 255.0
 ceundotre: DD 0.0, 1.0, 2.0, 3.0
 cuatrocuatros: DD 4.0, 4.0, 4.0, 4.0
 cuatrounos: DD 1.0, 1.0, 1.0, 1.0
+ununo: DQ 1.0
 
 section .text
 
@@ -22,7 +23,8 @@ sierpinski_asm:
 	mov rbp, rsp
 	push r12
 	push r14
-
+	push r13
+	sub rsp,8
 											;rdi = source			,(copia de)
 											;rsi = destino			,(copia a)
 											;rdx = #cols			,cantColumnas
@@ -32,28 +34,42 @@ sierpinski_asm:
 
 	pxor XMM11,XMM11						;r14 = fila actual		(i)
 	pxor XMM12,XMM12						;r12 = columna actual	(j)
+	pxor XMM10,XMM10
 
 	addps XMM12, [ceundotre]				;XMM12 = {j,j+1,j+2,j+3}
 
 	xor r14,r14
 	xor r12,r12
-
+	xor r13,r13
 
 
 	pxor XMM8,XMM8							;XMM8 = 0
 
 	movdqu XMM14, [cuatrocuatros]			;XMM14 = {4,4,4,4}
 	movdqu XMM15, [cuatrounos]				;XMM15 = {1,1,1,1}
-	movdqu XMM10, [D55]						;XMM10 = {255,255,255,255}
+	movq XMM13  , [ununo]					;XMM13 = 1
+
+	cvtsi2ss XMM10,r13d 					;XMM10 = 255
 
 	pxor XMM6,XMM6
 	pxor XMM7,XMM7
-	movd XMM6, edx							;XMM6 = #cols
-	movd XMM7, ecx							;XMM7 = #filas
-	shufps XMM6, XMM6, 0					;XMM6 = {#filas,#filas,#filas,#filas}
-	shufps XMM7, XMM7, 0					;XMM7 = {#columnas,#columnas,#columnas,#columnas}
-	cvttdq2ps XMM6, XMM6	
-	cvttdq2ps XMM7, XMM7	
+	mov r13d, 255
+
+	cvtsi2sd XMM6,r13d 						;XMM6 = 255
+	cvtsi2sd XMM10, edx						;XMM10 = #cols
+	divsd XMM6, XMM10						;XMM6 = 255/#columnas
+	cvtsd2ss XMM6,XMM6
+
+	cvtsi2sd XMM7, r13d						;XMM7 = 255
+	cvtsi2sd XMM10, edx						;XMM10 = #filas
+	divsd XMM7, XMM10						;XMM7 = 255/#filas
+;	cvtsd2ss XMM7,XMM7
+
+	shufps XMM6, XMM6, 0					;XMM6 = {255/#columnas,255/#columnas,255/#columnas,255/#columnas}
+;	shufps XMM7, XMM7, 0					;XMM7 = {255/#filas,255/#filas,255/#filas,255/#filas}
+
+	cvtsi2ss XMM10, r13d					;XMM10 = 255
+	shufps XMM10,XMM10, 0					;XMM10 = {255,255,255,255}
 
 .ciclo:
 
@@ -61,18 +77,25 @@ sierpinski_asm:
 		movdqa XMM0, XMM11					;XMM0 = {i,i,i,i}
 		movdqa XMM1, XMM12					;XMM1 = {j,j+1,j+2,j+3}
 
-		mulps XMM0, XMM10					;XMM0 = {i*255,i*255,i*255,i*255}
-		mulps XMM1, XMM10					;XMM1 = {j*255,(j+1)*255,(j+2)*255,(j+3)*255}
 
-		divps XMM0, XMM6					;XMM0 = {i*255/#filas,i*255/#filas,i*255/#filas,i*255/#filas}
-		divps XMM1, XMM7					;XMM1 = {j*255/#columnas,(j+1)*255/#columnas,(j+2)*255/#columnas,(j+3)*255/#columnas}
+
+		mulsd XMM0, XMM7					;XMM0 = i*255/#filas (double)
+		cvtsd2ss XMM0,XMM0					;XMM0 = i*255/#filas (scalar)
+		shufps XMM0,XMM0, 0					;XMM0 = {i*255/#filas,i*255/#filas,i*255/#filas,i*255/#filas}
+
+		mulps XMM1, XMM6					;XMM1 = {j*255/#columnas,(j+1)*255/#columnas,(j+2)*255/#columnas,(j+3)*255/#columnas}
+
+		;divps XMM0, XMM6					;XMM0 = {i*255/#filas,i*255/#filas,i*255/#filas,i*255/#filas}
+		;divps XMM1, XMM7					;XMM1 = {j*255/#columnas,(j+1)*255/#columnas,(j+2)*255/#columnas,(j+3)*255/#columnas}
 
 		cvttps2dq XMM0, XMM0				;XMM0 = int({i*255/#filas,i*255/#filas,i*255/#filas,i*255/#filas})
 		cvttps2dq XMM1, XMM1				;XMM1 = int({j*255/#columnas,(j+1)*255/#columnas(j+2)*255/#columnas,(j+3)*255/#columnas})
 
 		pxor XMM0,XMM1						;XMM0 = int({coef,coef1,coef2,coef3}) SIN DIVIDIR
 
-		cvttdq2ps XMM0, XMM0				;XMM0 = {coef,coef1,coef2,coef3} SIN DIVIDIR
+		cvtdq2ps XMM0, XMM0					;XMM0 = {coef,coef1,coef2,coef3} SIN DIVIDIR
+
+		divps XMM0, XMM10
 
 		pxor XMM2,XMM2
 		pxor XMM3,XMM3
@@ -100,10 +123,10 @@ sierpinski_asm:
 		punpcklwd XMM4, XMM8				;XMM4={r2,g2,b2,a2}
 		punpcklwd XMM5, XMM8				;XMM5={r3,g3,b3,a3}
 
-		cvttdq2ps XMM2, XMM2
-		cvttdq2ps XMM3, XMM3
-		cvttdq2ps XMM4, XMM4
-		cvttdq2ps XMM5, XMM5
+		cvtdq2ps XMM2, XMM2
+		cvtdq2ps XMM3, XMM3
+		cvtdq2ps XMM4, XMM4
+		cvtdq2ps XMM5, XMM5
 
 		movdqa XMM9, XMM0
 		shufps XMM9, XMM9, 0				;XMM9 = {coef3,coef3,coef3,coef3}
@@ -121,10 +144,11 @@ sierpinski_asm:
 		shufps XMM9, XMM9, 255				;XMM9 = {coef0,coef0,coef0,coef0}
 		mulps XMM2, XMM9
 
-		divps XMM5, XMM10
-		divps XMM4, XMM10
-		divps XMM3, XMM10
-		divps XMM2, XMM10
+
+;		divps XMM5, XMM10
+;		divps XMM4, XMM10
+;		divps XMM3, XMM10
+;		divps XMM2, XMM10
 
 		cvttps2dq XMM5, XMM5
 		cvttps2dq XMM4, XMM4
@@ -161,7 +185,7 @@ sierpinski_asm:
 
 										;caso SI llegue al final de fila
 
-	addps XMM11,XMM15					;XMM11 = {i+1,i+1,i+1,i+1}
+	addsd XMM11,XMM13					;XMM11 = {i+1,i+1,i+1,i+1}
 	inc r14d
 
 	pxor XMM12,XMM12
@@ -172,6 +196,8 @@ sierpinski_asm:
 
 .fin:
 
+	add rsp,8
+	pop r13
 	pop r14
 	pop r12
 	pop rbp

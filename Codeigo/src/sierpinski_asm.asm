@@ -12,6 +12,7 @@ section .text
 
 sierpinski_asm:
     
+
 			push rbp
 			mov rbp, rsp
 			push r14

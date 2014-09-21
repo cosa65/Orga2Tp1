@@ -1,3 +1,4 @@
 0 cropflip 64 120 16 15
+0 bandas
 5 sierpinski
 5 mblur
