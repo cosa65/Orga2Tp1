@@ -43,7 +43,7 @@ sierpinski_asm:
 	xor r13,r13
 
 
-	pxor XMM8,XMM8							;XMM8 = 0
+;	pxor XMM8,XMM8							;XMM8 = 0
 
 	movdqu XMM14, [cuatrocuatros]			;XMM14 = {4,4,4,4}
 	movdqu XMM15, [cuatrounos]				;XMM15 = {1,1,1,1}
@@ -61,8 +61,8 @@ sierpinski_asm:
 	cvtsd2ss XMM6,XMM6
 
 	cvtsi2sd XMM7, r13d						;XMM7 = 255
-	cvtsi2sd XMM10, edx						;XMM10 = #filas
-	divsd XMM7, XMM10						;XMM7 = 255/#filas
+;	cvtsi2sd XMM10, edx						;XMM10 = #filas
+;	divsd XMM7, XMM10						;XMM7 = 255/#filas
 ;	cvtsd2ss XMM7,XMM7
 
 	shufps XMM6, XMM6, 0					;XMM6 = {255/#columnas,255/#columnas,255/#columnas,255/#columnas}
@@ -78,8 +78,9 @@ sierpinski_asm:
 		movdqa XMM1, XMM12					;XMM1 = {j,j+1,j+2,j+3}
 
 
-
-		mulsd XMM0, XMM7					;XMM0 = i*255/#filas (double)
+		cvtsi2sd XMM8, edx					;XMM8 = #filas
+		mulsd XMM0, XMM7					;XMM0 = i*255 (double)
+		divsd XMM0, XMM8					;XMM0 = i*255/#filas (double)
 		cvtsd2ss XMM0,XMM0					;XMM0 = i*255/#filas (scalar)
 		shufps XMM0,XMM0, 0					;XMM0 = {i*255/#filas,i*255/#filas,i*255/#filas,i*255/#filas}
 
@@ -103,25 +104,31 @@ sierpinski_asm:
 		pxor XMM5,XMM5
 
 		movdqu XMM2,[rdi]					;XMM2 = {p3,p2,p1,p0}		
-		shufps XMM3,XMM2, 64
-		shufps XMM3,XMM3, 3
 
-		shufps XMM4,XMM2, 128
-		shufps XMM4,XMM4, 3
+		movdqa XMM3, XMM2
+		movdqa XMM4, XMM2
+		movdqa XMM5, XMM2
 
-		shufps XMM5,XMM2, 192
-		shufps XMM5,XMM5, 3
+;		shufps XMM3,XMM2, 64
+;		shufps XMM3,XMM3, 3
 
+;		shufps XMM4,XMM2, 128
+;		shufps XMM4,XMM4, 3
+
+;		shufps XMM5,XMM2, 192
+;		shufps XMM5,XMM5, 3
+
+		pxor XMM8,XMM8						;XMM8 = 0
 
 		punpcklbw XMM2, XMM8
 		punpcklbw XMM3, XMM8
-		punpcklbw XMM4, XMM8
-		punpcklbw XMM5, XMM8
+		punpckhbw XMM4, XMM8
+		punpckhbw XMM5, XMM8
 
 		punpcklwd XMM2, XMM8				;XMM2={r0,g0,b0,a0}
-		punpcklwd XMM3, XMM8				;XMM3={r1,g1,b1,a1}
+		punpckhwd XMM3, XMM8				;XMM3={r1,g1,b1,a1}
 		punpcklwd XMM4, XMM8				;XMM4={r2,g2,b2,a2}
-		punpcklwd XMM5, XMM8				;XMM5={r3,g3,b3,a3}
+		punpckhwd XMM5, XMM8				;XMM5={r3,g3,b3,a3}
 
 		cvtdq2ps XMM2, XMM2
 		cvtdq2ps XMM3, XMM3
