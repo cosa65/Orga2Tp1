@@ -41,7 +41,7 @@ void mblur_c    (
 
 	for (int i = 0; i < filas; i++)
     {
-        for (int j = 8; j < (cols*4); j=j+4)
+        for (int j = 0; j < (cols*4); j=j+4)
         {
             if((j>=8)&&(j<((cols*4)-8))&&(i>=2)&&(i<(filas-2))){
                 r1 = src_matrix[i-2][j-8];
@@ -69,6 +69,7 @@ void mblur_c    (
                 rd = 0;
                 gd = 0;
                 bd = 0;
+                dst_matrix[i][j+3] = 255; 
             }
             dst_matrix[i][j] = rd;
             dst_matrix[i][j+1] = gd;
