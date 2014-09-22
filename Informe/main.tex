@@ -30,6 +30,30 @@
 
 \section{Introducci\'{o}n}
 
+Este Trabajo Pr\'{a}ctico se ha centrado en explorar el modelo de programaci\'{o}n \textbf{SIMD}, us\'{a}ndolo para una aplicaci\'{o}n popular del set de instrucciones SIMD de intel (SSE), procesamiento de im\'{a}genes y videos.\\
+En particular, se implementaron 4 filtros de im\'{a}genes: Cropflip, Sierpinski, Bandas y Motion Blur.\\
 
+Se ha buscado aprovechar los beneficios de SSE: 
+
+\begin{itemize}
+
+	\item Procesar conjuntos de datos de manera eficiente, ejecutando de manera paralela (al mismo tiempo) la misma instrucci\'{o}n sobre distintos datos.
+	
+	\item El uso de los registros XMM, los cuales proveen una gran versatilidad con la opci\'{o}n de ejecutar operaciones de punto flotante y enteras con distintas precisiones (sobre datos empaquetados o escalares).
+
+	\item Minimizar los accesos a memoria.
+	
+	\item No se me ocurri\'{o} nada mas, pero llenen o borren, como les parezca mejor :)
+
+\end{itemize} 
+Luego de implementar en C y asm (procesando de manera escalar y vectorial los datos, respectivamente) los filtros de im\'{a}genes se ha comparado la performance de ambos modelos de programaci\'{o}n para determinar de manera aproximada la ventaja que se gana al trabajar sobre muchos datos de manera simult\'{a}nea.
+
+\newpage
+
+\section{Desarrollo}
+
+
+\newpage
+\section{Conclusi\'{o}n}
 
 \end{document}

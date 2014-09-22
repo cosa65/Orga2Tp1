@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.11)  21 SEP 2014 18:37
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.11)  22 SEP 2014 14:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -385,7 +385,7 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-<logo_dc.jpg, id=8, 233.07076pt x 102.98476pt>
+<logo_dc.jpg, id=16, 233.07076pt x 102.98476pt>
 File: logo_dc.jpg Graphic file (type jpg)
  <use logo_dc.jpg>
 Package pdftex.def Info: logo_dc.jpg used on input line 29.
@@ -409,14 +409,7 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 29.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Missing character: There is no Ã in font cmr10!
-Missing character: There is no ³ in font cmr10!
-
-Overfull \hbox (71.9438pt too wide) in paragraph at lines 29--29
- [][] 
- []
-
-<logo_uba.jpg, id=9, 225.4824pt x 231.7458pt>
+<logo_uba.jpg, id=17, 225.4824pt x 231.7458pt>
 File: logo_uba.jpg Graphic file (type jpg)
  <use logo_uba.jpg>
 Package pdftex.def Info: logo_uba.jpg used on input line 29.
@@ -435,40 +428,53 @@ Underfull \hbox (badness 10000) in paragraph at lines 29--29
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./logo_dc.jpg> <./logo_uba
 .jpg>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 35.
+Underfull \hbox (badness 10000) in paragraph at lines 33--35
+
+ []
+
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 40.
+(/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 40.
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.35 \end{document}
-                    [1]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 35.
+l.51 \newpage
+              [1] [2]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 59.
+ [3]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 59.
  (./main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 35.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 35.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 59.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 59.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: B111389894C96EAEB574445520AD0411;50.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 35.
+(rerunfilecheck)             Checksum: 2A16141D527A68B8BABBED04E74C4123;143.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 59.
  ) 
 Here is how much of TeX's memory you used:
- 6227 strings out of 494925
- 89113 string characters out of 6178544
- 173015 words of memory out of 5000000
- 9390 multiletter control sequences out of 15000+600000
+ 6249 strings out of 494925
+ 89449 string characters out of 6178544
+ 173016 words of memory out of 5000000
+ 9405 multiletter control sequences out of 15000+600000
  7931 words of font info for 31 fonts, out of 8000000 for 9000
  62 hyphenation exceptions out of 8191
- 33i,8n,28p,221b,322s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on main.pdf (2 pages, 336265 bytes).
+ 33i,8n,28p,334b,322s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmssbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmtt10.pfb>
+Output written on main.pdf (4 pages, 358276 bytes).
 PDF statistics:
- 51 PDF objects out of 1000 (max. 8388607)
- 37 compressed objects within 1 object stream
- 3 named destinations out of 1000 (max. 500000)
- 19 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 77 PDF objects out of 1000 (max. 8388607)
+ 59 compressed objects within 1 object stream
+ 7 named destinations out of 1000 (max. 500000)
+ 35 words of extra memory for PDF output out of 10000 (max. 10000000)
 
