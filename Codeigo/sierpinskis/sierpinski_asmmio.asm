@@ -10,6 +10,7 @@ ununo: DQ 1.0
 
 section .text
 
+
 ;void sierpinski_asm (unsigned char *src,	
 ;                     unsigned char *dst,		
 ;                     int cols, int rows,	
@@ -25,11 +26,14 @@ sierpinski_asm:
 	push r14
 	push r13
 	sub rsp,8
+
+	mov r10, rdi
+	mov r11, rsi
 											;rdi = source			,(copia de)
 											;rsi = destino			,(copia a)
 											;rdx = #cols			,cantColumnas
 											;rcx = #filas			,cantFilas
-
+											;r8 =  src row_size
 											;r9  = dst row_size
 
 	pxor XMM11,XMM11						;r14 = fila actual		(i)
@@ -103,7 +107,7 @@ sierpinski_asm:
 		pxor XMM4,XMM4
 		pxor XMM5,XMM5
 
-		movdqu XMM2,[rdi]					;XMM2 = {p3,p2,p1,p0}		
+		movdqu XMM2,[r10]					;XMM2 = {p3,p2,p1,p0}		
 
 		movdqa XMM3, XMM2
 		movdqa XMM4, XMM2
@@ -175,22 +179,28 @@ sierpinski_asm:
 		shufps XMM2, XMM3, 0				;XMM2 = {p1,p1,p0,p0}
 		shufps XMM4, XMM5, 0				;XMM4 = {p3,p3,p2,p2}
 		shufps XMM2, XMM4, 0x88				;XMM2 = {p3,p2,p1,0}
-		movdqu [rsi],  XMM2
+		movdqu [r11],  XMM2
 
 
 .ChequeoSiSeguir:
 
-	add rdi,16
-	add rsi,16
+	add r10,16
+	add r11,16
 
 	add r12d,16							;r12 = {(pixel+4)*4}
 
 	addps XMM12,XMM14					;XMM12 = {j+4,j+5,j+6,j+7}
 
-	cmp r12d,r9d 						;veo si llegue al final de la fila
+	cmp r12,r8 							;veo si llegue al final de la fila
 	jne .ciclo							;caso NO llegue al final de fila
 
 										;caso SI llegue al final de fila
+
+	add rdi, r8
+	add rsi, r9
+	mov r10, rdi
+	mov r11, rsi
+
 
 	addsd XMM11,XMM13					;XMM11 = {i+1,i+1,i+1,i+1}
 	inc r14d

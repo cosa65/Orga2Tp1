@@ -10,6 +10,8 @@ for i in range(10):
 for j in range(10):
 	y[j]=j+3
 
+y[5] = 100
+
 plt.plot(x, y, label = "lineal")
 
 #plt.plot(x, x**2, label = "cuadratico" )

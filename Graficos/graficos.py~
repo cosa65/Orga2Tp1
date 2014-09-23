@@ -8,9 +8,11 @@ for i in range(10):
 	x[i]=i
 
 for j in range(10):
-	y[j]=5
+	y[j]=j+3
 
-plt.plot(x, y+1, label = "lineal")
+x[5] = 100
+
+plt.plot(x, y, label = "lineal")
 
 #plt.plot(x, x**2, label = "cuadratico" )
 
