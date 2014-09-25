@@ -1,0 +1,6 @@
+Tiempo de ejecución:
+  Comienzo                          : 7419203505027
+  Fin                               : 7419385363444
+  # iteraciones                     : 100
+  # de ciclos insumidos totales     : 181858417
+  # de ciclos insumidos por llamada : 1818584.125

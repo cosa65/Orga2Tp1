@@ -75,7 +75,20 @@ void correr_filtro_imagen(configuracion_t *config, aplicador_fn_t aplicador)
 	else
 	{
 		opencv_abrir_imagenes(config);
-		aplicador(config);
+		unsigned long long tiempoStart;
+		MEDIR_TIEMPO_START(tiempoStart);
+
+		int i;
+		for(i = 1; i <= config->cant_iteraciones; i++){
+			aplicador(config);
+		}
+
+		unsigned long long tiempoStop;
+		MEDIR_TIEMPO_STOP(tiempoStop);
+
+		imprimir_tiempos_ejecucion(tiempoStart, tiempoStop, config->cant_iteraciones);
+
+
 		opencv_liberar_imagenes(config);
 	}
 }
@@ -101,16 +114,17 @@ void correr_filtro_video(configuracion_t *config, aplicador_fn_t aplicador)
 }
 
 
-
 void imprimir_tiempos_ejecucion(unsigned long long int start, unsigned long long int end, int cant_iteraciones) {
 	unsigned long long int cant_ciclos = end-start;
 
-	printf("Tiempo de ejecución:\n");
-	printf("  Comienzo                          : %llu\n", start);
-	printf("  Fin                               : %llu\n", end);
-	printf("  # iteraciones                     : %d\n", cant_iteraciones);
-	printf("  # de ciclos insumidos totales     : %llu\n", cant_ciclos);
-	printf("  # de ciclos insumidos por llamada : %.3f\n", (float)cant_ciclos/(float)cant_iteraciones);
+	FILE* archivo = fopen("tiempos.txt", "w");
+
+	fprintf(archivo, "Tiempo de ejecución:\n");
+	fprintf(archivo, "  Comienzo                          : %llu\n", start);
+	fprintf(archivo, "  Fin                               : %llu\n", end);
+	fprintf(archivo, "  # iteraciones                     : %d\n", cant_iteraciones);
+	fprintf(archivo, "  # de ciclos insumidos totales     : %llu\n", cant_ciclos);
+	fprintf(archivo, "  # de ciclos insumidos por llamada : %.3f\n", (float)cant_ciclos/(float)cant_iteraciones);
 }
 
 

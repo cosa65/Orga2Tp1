@@ -1,0 +1,14 @@
+3.1 Cropflip:
+	1.1, 1.2 Juli
+	3.2 Mediciones: 1.3, 1.4 Fosqui. 1.5 DK
+
+Sierpinski:
+	2.1 Fosqui (sec vs Vectorial)
+	2.1 DK (cpu vs mem)
+
+Bandas:
+	3.1 Juli
+	3.2 Fosqui
+
+MBlur:
+	4.1 Fosqui

@@ -1,0 +1,1 @@
+./tp2 -i asm sierpinski lena.512x512.bmp -t 10
