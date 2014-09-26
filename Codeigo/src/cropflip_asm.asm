@@ -1,5 +1,7 @@
 global cropflip_asm
 
+section .data
+
 section .text
 ;void tiles_asm(unsigned char *src,
 ;              unsigned char *dst,
@@ -14,10 +16,7 @@ cropflip_asm:
 			push rbp
 			mov rbp, rsp
 
-			push r12
-			push r13
 			push r14
-			push r15
 			push rbx
 
 			;la pila queda desalineada, pero como no
@@ -33,35 +32,36 @@ cropflip_asm:
 			;de la imagen destino para que apunte a donde
 			;hay que empezar a escribir, queda en R11:
 
+			mov ecx, [rbp+16]
 			mov eax, [rbp+24]
-			mov rbx, 8589934591		;Ahora en cada and con rbx
+			mov rbx, 4294967295		;Ahora en cada and con rbx
 			and rax, rbx			;se va a limpiar la parte alta
-			xor r11, r11 			;del registro, es necesario
-			mov r11d, [rbp+16]		;para hacer aritmetica de punteros
-			mul r11
+			xor r14, r14 			;del registro, es necesario
+			mov r14d, ecx		;para hacer aritmetica de punteros
+			mul r14
 			shl rax, 2
 			add rax, rsi
-			mov r11, rax
-			mov r10d, [rbp+16]
+			mov r14, rax
+			mov r10d, ecx
 			shl r10d, 2
 			and r10, rbx
-			sub r11, r10
+			sub r14, r10
 
 			;Este parrafo modifica el puntero de
 			;la imagen fuente para que apunte a donde
 			;hay que empezar a leer, queda en R14:
 
-			mov r12d, [rbp+32]
-			mov r13d, [rbp+40]
+			mov r11d, [rbp+32]
+			mov r10d, [rbp+40]
 			and r8, rbx
-			and r12, rbx
-			and r13, rbx
+			and r11, rbx
+			and r10, rbx
 			mov rax, r8
-			mul r13
-			shl r12, 2
-			add rax, r12
-			mov r14, rax
-			add r14, rdi
+			mul r10
+			shl r11, 2
+			add rax, r11
+			mov r11, rax
+			add r11, rdi
 
 			;Ahora se setean 3 contadores,
 			;Uno de bytes horizontales en RBX,
@@ -69,10 +69,10 @@ cropflip_asm:
 			;y un backup del primero en R15
 			
 
-			mov r15d, [rbp+16]
-			and r15, rbx
-			shl r15, 2
-			mov rbx, r15 		;RBX pierde su funcion de and
+			mov r10d, ecx
+			and r10, rbx
+			shl r10, 2
+			mov rbx, r10 		;RBX pierde su funcion de and
 			mov eax, [rbp+24]
 
 			;Aca se procesa la imagen:
@@ -91,27 +91,25 @@ cropflip_asm:
 			;va escribiendo de abajo para arriba.
 			;Ambos leen la fila de izquierda a derecha
 
-.fosconi:	movdqu xmm0, [r14]
-			movdqu [r11], xmm0
-			add r14, 16
+.fosconi:	movdqu xmm0, [r11]
+			movdqu [r14], xmm0
 			add r11, 16
+			add r14, 16
 			sub rbx, 16
 			cmp rbx, 0
 			jne .fosconi
-			sub r11, r9
-			sub r11, r9
-			add r14, r8
-			sub r14, r15
-			mov rbx, r15
+			sub r14, r9
+			sub r14, r9
+			add r11, r8
+			sub r11, r10
+			mov rbx, r10
 			dec eax
 			cmp eax, 0
 			jne .fosconi
 
+
 			pop rbx
-			pop r15
 			pop r14
-			pop r13
-			pop r12
 			pop rbp
 
     		ret

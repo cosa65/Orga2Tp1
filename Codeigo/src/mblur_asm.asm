@@ -21,10 +21,10 @@ mblur_asm:
 				push r15
 				push rbx
 				
-				and r9, 8589934591
-				and r8, 8589934591
-				and rcx, 8589934591
-				and rdx, 8589934591
+				and r9, 4294967295
+				and r8, 4294967295
+				and rcx, 4294967295
+				and rdx, 4294967295
 
 				mov r10, rdx
 				mov rax, rdx
@@ -43,6 +43,8 @@ mblur_asm:
 				mov r13, rsi
 
 				mov ebx, 5
+				cvtsi2ss xmm15, ebx
+				movd ebx, xmm15
 
 	.riquelme:	cmp rcx, 2
 				jle .zero
@@ -99,7 +101,7 @@ mblur_asm:
 				cvtdq2ps xmm0, xmm0
 				cvtdq2ps xmm1, xmm1
 
-				cvtsi2ss xmm15, ebx
+				movd xmm15, ebx
 				shufps xmm15, xmm15, 00000000
 
 				divps xmm0, xmm15
@@ -150,7 +152,7 @@ mblur_asm:
 				cvtdq2ps xmm10, xmm10
 				cvtdq2ps xmm9, xmm9
 
-				cvtsi2ss xmm15, ebx
+				movd xmm15, ebx
 				shufps xmm15, xmm15, 00000000
 
 				divps xmm10, xmm15

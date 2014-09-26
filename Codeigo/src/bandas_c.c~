@@ -22,8 +22,8 @@ void bandas_c (
 			/*if(total < 672){final = 192;}
 			if(total < 480){final = 128;}
 			if(total < 288){final = 64;}
-			if(total < 96){final = 0;}
-*/
+			if(total < 96){final = 0;}*/
+
 			dst_matrix[i][j*4] = final;
 			dst_matrix[i][(j*4)+1] = final;
 			dst_matrix[i][(j*4)+2] =final;
