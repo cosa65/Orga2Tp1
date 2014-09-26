@@ -35,8 +35,8 @@ bandas_asm:
 		cvtsi2ss xmm12, r11d
 		shufps xmm12, xmm12, 00000000
 
-		mov r10d, 1
-		cvtsi2ss xmm13, r10d
+		dec r11d
+		cvtsi2ss xmm13, r11d
 		shufps xmm13, xmm13, 00000000
 
 		mov r11d, 64
@@ -47,7 +47,21 @@ bandas_asm:
 		mov r11d, 65535
 		movd xmm15, r11d
 
+		pxor xmm9, xmm9
+
+		mov r11, 0x0C0C0C0C08080808
+		movq xmm4, r11
+		pslldq xmm4, 8
+		mov r11, 0x0404040400000000
+		movq xmm9, r11
+		por xmm9, xmm4
+		;movdqu xmm9, 0x0C0C0C0C080808080404040400000000
+
 		pxor xmm4, xmm4
+
+		mov r11d, 255
+		movd xmm8, r11d,
+		pshufd xmm8, xmm8, 0x00
 
 		mov r13, rdi
 		mov r14, rsi
@@ -103,18 +117,27 @@ bandas_asm:
 		mulps xmm0, xmm14
 
 		cvttps2dq xmm0, xmm0
+
 		movdqa xmm1, xmm0
-		movdqa xmm2, xmm0
-		movdqa xmm3, xmm0
 
-		pshufd xmm0, xmm0, 0x00
-		pshufd xmm1, xmm1, 0x55
-		pshufd xmm2, xmm2, 0xAA
-		pshufd xmm3, xmm3, 0xFF
+		pcmpgtd xmm1, xmm8
 
-		packusdw xmm0, xmm1
-		packusdw xmm2, xmm3
-		packuswb xmm0, xmm2
+		por xmm0, xmm1
+
+		pshufb xmm0, xmm9
+
+		;movdqa xmm1, xmm0
+		;movdqa xmm2, xmm0
+		;movdqa xmm3, xmm0
+
+		;pshufd xmm0, xmm0, 0x00
+		;pshufd xmm1, xmm1, 0x55
+		;pshufd xmm2, xmm2, 0xAA
+		;pshufd xmm3, xmm3, 0xFF
+
+		;packusdw xmm0, xmm1
+		;packusdw xmm2, xmm3
+		;packuswb xmm0, xmm2
 
 		movdqu [r14], xmm0
 
