@@ -3,4 +3,4 @@
 
 
 sudo cpufreq-set -c 0 -g performance
-
+sudo cpufreq-set -f 2000000

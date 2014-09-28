@@ -26,88 +26,84 @@ bandas_asm:
 		and rcx, 4294967295
 		and rdx, 4294967295
 
-		mov r11d, 96
-		cvtsi2ss xmm11, r11d
-		shufps xmm11, xmm11, 00000000
+		mov r11d, 64
+		movd xmm4, r11d
+		pshufd xmm4, xmm4, 0x00
 
-		mov r11d, 1
+		mov r11d, 192
+		movd xmm5, r11d
+		pshufd xmm5, xmm5, 0x00
+
+		mov r11d, 95
+		movd xmm11, r11d
+		pshufd xmm11, xmm11, 0x00
+
+		mov r11d, 287
+		movd xmm12, r11d
+		pshufd xmm12, xmm12, 0x00
+
+		mov r11d, 479
 		movd xmm13, r11d
-		shufps xmm13, xmm13, 00000000
+		pshufd xmm13, xmm13, 0x00
 
-		pxor xmm15, xmm15
-		mov r11d, 65535
-		movd xmm15, r11d
+		mov r11d, 671
+		movd xmm14, r11d
+		pshufd xmm14, xmm14, 0x00
 
 		pxor xmm9, xmm9
 
 		mov r11, 0x0C0C0C0C08080808
-		movq xmm4, r11
-		pslldq xmm4, 8
+		movq xmm6, r11
+		pslldq xmm6, 8
 		mov r11, 0x0404040400000000
 		movq xmm9, r11
-		por xmm9, xmm4
+		por xmm9, xmm6
 
-		pxor xmm4, xmm4
-
-		mov r11d, 255
-		movd xmm8, r11d,
-		pshufd xmm8, xmm8, 0x00
+		mov r11d, 0x000000FF
+		movd xmm10, r11d
+		pshufd xmm10, xmm10, 0x00
 
 		mov r11, rdi
 		mov rax, rsi
 		mov r10, rdx
 
 .ciclope movdqu xmm0, [r11]
-		movdqa xmm5, xmm0
-		punpcklbw xmm0, xmm4
-		punpckhbw xmm5, xmm4
 		movdqa xmm1, xmm0
 		movdqa xmm2, xmm0		
-		movdqa xmm6, xmm5
-		movdqa xmm7, xmm5
-		psrldq xmm1, 2
-		psrldq xmm2, 4		
-		psrldq xmm6, 2
-		psrldq xmm7, 4
-		paddw xmm0, xmm1
-		paddw xmm0, xmm2
-		paddw xmm5, xmm6
-		paddw xmm5, xmm7
 
-		movdqa xmm1, xmm0		
-		movdqa xmm6, xmm5
+		psrldq xmm1, 1
+		psrldq xmm2, 2		
 
-		psrldq xmm1, 8
-		psrldq xmm6, 8
+		pand xmm0, xmm10
+		pand xmm1, xmm10
+		pand xmm2, xmm10
 
-		pand xmm0, xmm15
-		pand xmm1, xmm15
-		pand xmm5, xmm15
-		pand xmm6, xmm15
+		paddd xmm0, xmm1
+		paddd xmm0, xmm2
 
-		pslldq xmm1, 2
-		pslldq xmm5, 4
-		pslldq xmm6, 6
+		pxor xmm3, xmm3
 
-		por xmm0, xmm1
-		por xmm0, xmm5
-		por xmm0, xmm6
+		movdqa xmm15, xmm0
+		pcmpgtd xmm15, xmm11
+		pand xmm15, xmm4
+		por xmm3, xmm15
 
-		punpcklwd xmm0, xmm4
+		movdqa xmm15, xmm0
+		pcmpgtd xmm15, xmm12
+		pand xmm15, xmm5
+		pxor xmm3, xmm15
 
-		cvtdq2ps xmm0, xmm0
-		divps xmm0, xmm11
-		cvttps2dq xmm0, xmm0
-		paddd xmm0, xmm13
-		psrld xmm0, 1
-		pslld xmm0, 6
+		movdqa xmm15, xmm0
+		pcmpgtd xmm15, xmm13
+		pand xmm15, xmm4
+		por xmm3, xmm15
 
-		movdqa xmm1, xmm0
-		pcmpgtd xmm1, xmm8
-		por xmm0, xmm1
-		pshufb xmm0, xmm9
+		pcmpgtd xmm0, xmm14
+		por xmm3, xmm0
 
-		movdqu [rax], xmm0
+		pshufb xmm3, xmm9
+
+		movdqu [rax], xmm3
 
 		sub r10, 4
 		add rax, 16
