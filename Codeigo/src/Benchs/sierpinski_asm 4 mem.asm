@@ -14,19 +14,7 @@ sierpinski_asm:
     	
 			push rbp
 			mov rbp, rsp
-			
-			mov [rsi], r11
-			mov qword[rsi], 111
-			mov r10, [rdi]
-			mov r11, [rsi]
-			mov [rsi], r11
-			mov qword[rsi], 111
-			mov r10, [rdi]
-			mov r11, [rsi]
-			mov [rsi], r11
-			mov qword[rsi], 111
-			mov r10, [rdi]
-			mov r11, [rsi]
+
 			mov [rsi], r11
 			mov qword[rsi], 111
 			mov r10, [rdi]

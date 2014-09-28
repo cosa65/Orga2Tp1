@@ -23,14 +23,6 @@ sierpinski_asm:
 			mov qword[rsi], 111
 			mov r10, [rdi]
 			mov r11, [rsi]
-			mov [rsi], r11
-			mov qword[rsi], 111
-			mov r10, [rdi]
-			mov r11, [rsi]
-			mov [rsi], r11
-			mov qword[rsi], 111
-			mov r10, [rdi]
-			mov r11, [rsi]
 
 			and r9, 4294967295
 			and r8, 4294967295
