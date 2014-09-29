@@ -1,0 +1,10 @@
+\select@language {spanish}
+\contentsline {section}{\numberline {1}Objetivos generales}{3}
+\contentsline {section}{\numberline {2}Desarrollo}{3}
+\contentsline {subsection}{\numberline {2.1}Explicaci\'{o}n de Implementaciones en assembler}{3}
+\contentsline {subsection}{\numberline {2.2}Experimentos}{4}
+\contentsline {paragraph}{\textbf {Titulo del parrafo} }{13}
+\contentsline {section}{\numberline {3}Enunciado y solucion}{13}
+\contentsline {subsection}{\numberline {3.1}Filtro cropflip}{13}
+\contentsline {subsection}{\numberline {3.2}Mediciones}{13}
+\contentsline {section}{\numberline {4}Conclusiones y trabajo futuro}{15}
