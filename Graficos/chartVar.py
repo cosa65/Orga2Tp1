@@ -4,15 +4,15 @@ import matplotlib.pyplot as plt
 
 
 # Example data
-nombres = ('O0','O1','O2','O3','asm')
+nombres = ('original','16 acc memoria','16 cuentas')
 
 y_pos = np.arange(len(nombres))
 
-tiempos = [17694922,5513945,4889967,4698057,1577304]
+tiempos = [1621513,2109353,1851460]
 
-desviosEstandar = [114064,24808,12316,68282,17601]
+desviosEstandar = [5533,56191,10864]
 
-colour = ['black','darkgreen','darkseagreen','palegreen','firebrick','indianred','tan']
+colour = ['black','darkgreen','firebrick']
 
 
 
@@ -23,6 +23,6 @@ plt.xlabel('Tiempos (ciclos)')
 for i,j in zip(tiempos,y_pos):
     plt.annotate(str(tiempos[j]),xy=(i,j+0.2))
 
-plt.title('Comparacion tiempos asm/C Motion Blur')
+plt.title('bus vs cpu - Sierpinski')
 
 plt.show()

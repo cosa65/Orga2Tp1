@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.11)  29 SEP 2014 21:55
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.11)  30 SEP 2014 00:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -936,14 +936,16 @@ Underfull \hbox (badness 10000) in paragraph at lines 266--267
 
  []
 
-File: imagenes/bvmcrop.png Graphic file (type png)
-<use imagenes/bvmcrop.png>
-Package pdftex.def Info: imagenes/bvmcrop.png used on input line 268.
+<imagenes/bvmsierp.png, id=49, 586.8324pt x 442.2924pt>
+File: imagenes/bvmsierp.png Graphic file (type png)
+
+<use imagenes/bvmsierp.png>
+Package pdftex.def Info: imagenes/bvmsierp.png used on input line 268.
 (pdftex.def)             Requested size: 300.0pt x 226.1128pt.
 LaTeX Info: Redefining \. on input line 270.
 LaTeX Info: Redefining \% on input line 270.
- [10 <./imagenes/CompCasm2.png>]
-<imagenes/cmpIFS.png, id=53, 586.8324pt x 442.2924pt>
+ [10 <./imagenes/CompCasm2.png> <./imagenes/bvmsierp.png>] <imagenes/cmpIFS.png
+, id=55, 586.8324pt x 442.2924pt>
 File: imagenes/cmpIFS.png Graphic file (type png)
 
 <use imagenes/cmpIFS.png>
@@ -996,7 +998,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 292--293
 
  []
 
-<imagenes/CompCasm3.png, id=58, 586.8324pt x 442.2924pt>
+<imagenes/CompCasm3.png, id=60, 586.8324pt x 442.2924pt>
 File: imagenes/CompCasm3.png Graphic file (type png)
 
 <use imagenes/CompCasm3.png>
@@ -1049,7 +1051,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 312--313
 
  []
 
-<imagenes/CompCasm4.png, id=63, 586.8324pt x 442.2924pt>
+<imagenes/CompCasm4.png, id=65, 586.8324pt x 442.2924pt>
 File: imagenes/CompCasm4.png Graphic file (type png)
 
 <use imagenes/CompCasm4.png>
@@ -1070,10 +1072,10 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 3189 strings out of 494925
- 42536 string characters out of 6178544
+ 3194 strings out of 494925
+ 42651 string characters out of 6178544
  118023 words of memory out of 5000000
- 6330 multiletter control sequences out of 15000+600000
+ 6334 multiletter control sequences out of 15000+600000
  23124 words of font info for 37 fonts, out of 8000000 for 9000
  62 hyphenation exceptions out of 8191
  38i,13n,43p,701b,432s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1086,10 +1088,10 @@ ic/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
 nts/cm/cmss10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
 /cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt1
 0.pfb>
-Output written on informe.pdf (14 pages, 646830 bytes).
+Output written on informe.pdf (14 pages, 665067 bytes).
 PDF statistics:
- 100 PDF objects out of 1000 (max. 8388607)
+ 102 PDF objects out of 1000 (max. 8388607)
  59 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 46 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 51 words of extra memory for PDF output out of 10000 (max. 10000000)
 
