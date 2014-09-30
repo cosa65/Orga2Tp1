@@ -8,7 +8,7 @@
 \contentsline {subsubsection}{\numberline {2.1.4}Motion Blur}{4}
 \contentsline {subsection}{\numberline {2.2}Experimentos}{5}
 \contentsline {subsubsection}{\numberline {2.2.1}Cropflip}{5}
-\contentsline {subsubsection}{\numberline {2.2.2}Sierpinski}{9}
-\contentsline {subsubsection}{\numberline {2.2.3}Bandas}{11}
-\contentsline {subsubsection}{\numberline {2.2.4}Motion Blur}{13}
-\contentsline {section}{\numberline {3}Conclusiones y trabajo futuro}{14}
+\contentsline {subsubsection}{\numberline {2.2.2}Sierpinski}{10}
+\contentsline {subsubsection}{\numberline {2.2.3}Bandas}{12}
+\contentsline {subsubsection}{\numberline {2.2.4}Motion Blur}{14}
+\contentsline {section}{\numberline {3}Conclusiones y trabajo futuro}{15}

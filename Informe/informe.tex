@@ -163,6 +163,8 @@ El uso de m\'{a}scaras no s\'{o}lo result\'{o} ser m\'{a}s claro, sino que tambi
 
 \subsection{Experimentos}
 
+Nota: Las mediciones de tiempo (en ciclos) de ejecuci\'{o}n de las diversas implementaciones fuerna hechas en una Intel Core i5-3210M (2.50 Ghz)
+
 \subsubsection{Cropflip}
 
 \textbf{Experimento 1.1)}\\
@@ -201,12 +203,15 @@ En este experimento consideraremos diferentes criterios realizando siempre 10 me
 
 \noindent\textbf{b)} \indent \textbf{Resultados:}\\ \\ 289209, 302654, 258757,\\ 254428, 248527, 254606,\\ 260391, 338981, 373612,\\ 280937 \\ \\ \\
 
-\noindent \textbf{c)} \\ \textbf{10 mediciones}\\Esperanza: 240254.2  Desv\'{i}o standard: 67250.78758  Varianza: 4522668429.51111\\
-\noindent \textbf{10 mediciones con el programa en simult\'{a}neo:}\\Esperanza: 286210.2  Desv\'{i}o standard: 41607.01932
+\noindent \textbf{c)} \\ \textbf{10 mediciones}\\Esperanza: 240254.2 \\ Desv\'{i}o standard: 67250.78758 \\ Varianza: 4522668429.51111\\ \\
+\noindent \textbf{10 mediciones con el programa en simult\'{a}neo:}\\Esperanza: 286210.2 \\ Desv\'{i}o standard: 41607.01932 \\
 Varianza: 1731144056.62222\\ \\ \\
-\textbf{d)} \textbf{10 mediciones sin 2 outliers:}\\Esperanza: 224103  Desv\'{i}o standard: 18595.78063  Varianza: 345803057.14286\\ \\ \\
+\textbf{d)} \textbf{10 mediciones sin 2 outliers:}\\Esperanza: 224103 \\ Desv\'{i}o standard: 18595.78063 \\ Varianza: 345803057.14286\\ \\ \\
 
-\noindent \textbf{e)} \\ INSERT GRAFICOU HERE \\ \\ \\
+\noindent \textbf{e)} \\
+\includegraphics[width=300pt]{imagenes/esperanzas.png}
+
+\includegraphics[width=300pt]{imagenes/varianzas.png}
 
 Luego de observar estas mediciones hemos notado una varianza demasiado alta (y, en consecuencia, una falta de confiabilidad en las mediciones), por lo tanto, luego de probar con distintos m\'{e}todos de medici\'{o}n decidimos tomar el promedio de 1000 mediciones 10 veces, eliminar outliers y calcular luego nuevamente el promedio de las mediciones restantes.
 
