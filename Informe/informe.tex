@@ -159,6 +159,16 @@ El uso de m\'{a}scaras no s\'{o}lo result\'{o} ser m\'{a}s claro, sino que tambi
 
 \subsubsection{Motion Blur}
 
+Para el Motion Blur el ciclo consta de:
+\begin{itemize}
+\item Al principio del principio se checkea si el puntero de escritura apunta a alg\'{u}n borde. Si es as\'{i} se salta para escribir p\'{i}xeles negros, si no, se procede al procesamiento. \\
+\item Levantamos de memoria 20 p\'{i}xeles, en xmm0, xmm2, xmm4, xmm6 y xmm8. Haciendo copias en xmm10, xmm11, xmm12, xmm13, xmm14 respectivamente. \\
+\item Se desempaquetan a word los dos p\'{i}xeles mas bajos, para poder sumar sin que se genere overflow. \\
+\item Se suman dos p\'{i}xeles, luego se desempaquetan y se convierten a floats para dividirlos por 5. Por \'{u}ltimo se empaquetan a words nuevamente. \\
+\item Luego se desempaquetan los dos p\'{i}xeles altos del backup hecho inicialmente y se prosiguen a procesarlos de igual manera. \\
+\item Por \'{u}ltimo se empaquetan los 4 p\'{i}xeles a Bytes y se guardan en la imagen destino.
+\end{itemize}
+
 \newpage
 
 \subsection{Experimentos}
