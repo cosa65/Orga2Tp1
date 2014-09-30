@@ -112,6 +112,22 @@ cropflip_asm:
 			movdqu [r14], xmm0
 			add r11, 16
 			add r14, 16
+			add r13, r12
+			sub r13, r12
+			add r12, 111
+			sub r12, 11
+			add r13, r12
+			sub r13, r12
+			add r12, 111
+			sub r12, 11
+			add r13, r12
+			sub r13, r12
+			add r12, 111
+			sub r12, 11
+			add r13, r12
+			sub r13, r12
+			add r12, 111
+			sub r12, 11
 			sub rbx, 16
 			cmp rbx, 0
 			jne .fosconi

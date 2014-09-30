@@ -18,16 +18,8 @@ cropflip_asm:
 
 			push r14
 			push rbx
-
-
-			mov [rsi], r14
-			mov dword[rsi], 0x00ABCDEF
-			mov rbx, [rdi]
-			mov r14, [rsi]
-			mov [rsi], r14
-			mov dword[rsi], 0x00ABCDEF
-			mov rbx, [rdi]
-			mov r14, [rsi]
+			push r13
+			push r12
 
 			;la pila queda desalineada, pero como no
 			;llamo a ninguna funcion esta todo bien (creo)
@@ -102,6 +94,16 @@ cropflip_asm:
 			;Ambos leen la fila de izquierda a derecha
 
 .fosconi:	movdqu xmm0, [r11]
+
+			mov [r14], r14
+			mov dword[r14], 0x00ABCDEF
+			mov r13, [r11]
+			mov r12, [r14]
+			mov [r14], r14
+			mov dword[r14], 0x00ABCDEF
+			mov r13, [r11]
+			mov r12, [r14]
+
 			movdqu [r14], xmm0
 			add r11, 16
 			add r14, 16
@@ -117,7 +119,8 @@ cropflip_asm:
 			cmp eax, 0
 			jne .fosconi
 
-
+			pop r12
+			pop r13
 			pop rbx
 			pop r14
 			pop rbp

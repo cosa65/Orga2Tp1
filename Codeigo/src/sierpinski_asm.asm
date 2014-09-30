@@ -10,37 +10,23 @@ section .text
 ;                     int src_row_size,
 ;                     int dst_row_size)
 
+
 sierpinski_asm:
-    	
+    
 			push rbp
 			mov rbp, rsp
-			
-			mov [rsi], r11
-			mov qword[rsi], 111
-			mov r10, [rdi]
-			mov r11, [rsi]
-			mov [rsi], r11
-			mov qword[rsi], 111
-			mov r10, [rdi]
-			mov r11, [rsi]
-			mov [rsi], r11
-			mov qword[rsi], 111
-			mov r10, [rdi]
-			mov r11, [rsi]
-			mov [rsi], r11
-			mov qword[rsi], 111
-			mov r10, [rdi]
-			mov r11, [rsi]
+			push r14
+			push r13
 
-			and r9, 4294967295
-			and r8, 4294967295
-			and rcx, 4294967295
-			and rdx, 4294967295
+			and r9, 8589934591
+			and r8, 8589934591
+			and rcx, 8589934591
+			and rdx, 8589934591
 
 			pxor xmm15, xmm15
 			pxor xmm14, xmm14
-			mov r10d, 255
-			cvtsi2ss xmm13, r10d
+			mov r11d, 255
+			cvtsi2ss xmm13, r11d
 			shufps xmm13, xmm13, 00000000
 			movdqa xmm12, xmm13
 			movdqa xmm11, xmm13
@@ -50,20 +36,20 @@ sierpinski_asm:
 			shufps xmm9, xmm9, 00000000
 			divps xmm12, xmm10
 			divps xmm11, xmm9
-			mov r10d, 1
-			cvtsi2ss xmm10, r10d
+			mov r11d, 1
+			cvtsi2ss xmm10, r11d
 			shufps xmm10, xmm10, 00000000
 			pxor xmm4, xmm4
 			mov r10, rdx
-			mov r11, rdi
-			mov rax, rsi
+			mov r13, rdi
+			mov r14, rsi
 			;xmm15 fila
 			;xmm14 columna
 			;xmm13 255 x4 
 			;xmm12 255/cols x4 
 			;xmm11 255/fils x4
 			;xmm10 1 x4 
-.cicloni:	movdqu xmm0, [r11]
+.cicloni:	movdqu xmm0, [r13]
 			movdqa xmm1, xmm0
 			movdqa xmm2, xmm0
 			movdqa xmm3, xmm0
@@ -133,26 +119,26 @@ sierpinski_asm:
 
 			addps xmm14, xmm10
 
-			cvttps2dq xmm0, xmm0
-			cvttps2dq xmm1, xmm1
-			cvttps2dq xmm2, xmm2
-			cvttps2dq xmm3, xmm3
+			cvtps2dq xmm0, xmm0
+			cvtps2dq xmm1, xmm1
+			cvtps2dq xmm2, xmm2
+			cvtps2dq xmm3, xmm3
 
 			packusdw xmm0, xmm1
 			packusdw xmm2, xmm3
 			packuswb xmm0, xmm2
 
-			movdqu [rax], xmm0
+			movdqu [r14], xmm0
 
 			sub r10, 4
-			add rax, 16
-			add r11, 16
+			add r14, 16
+			add r13, 16
 			cmp r10, 0
 			jne .cicloni
 			add rsi, r9
-			mov rax, rsi
+			mov r14, rsi
 			add rdi, r8
-			mov r11, rdi
+			mov r13, rdi
 			mov r10, rdx
 			pxor xmm14, xmm14
 			addps xmm15, xmm10
@@ -160,5 +146,8 @@ sierpinski_asm:
 			cmp rcx, 0
 			jne .cicloni
 
+
+			pop r13
+			pop r14
 			pop rbp
     		ret

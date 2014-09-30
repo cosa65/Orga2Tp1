@@ -20,11 +20,19 @@ mblur_asm:
 				push r13
 				push r15
 				push rbx
+
+				;Aca se limpia la parte alta
+				;de los parametros de entrada
 				
 				and r9, 4294967295
 				and r8, 4294967295
 				and rcx, 4294967295
 				and rdx, 4294967295
+
+				;Primero se preparan registros
+				;necesarios para loopear y ver
+				;si el puntero de escritura
+				;esta en algun borde
 
 				mov r10, rdx
 				mov rax, rdx
@@ -43,125 +51,110 @@ mblur_asm:
 				mov r13, rsi
 
 				mov ebx, 5
-				cvtsi2ss xmm15, ebx
-				movd ebx, xmm15
-
-	.riquelme:	cmp rcx, 2
-				jle .zero
-				cmp r10, 2
-				jle .zero
-				cmp rcx, r15
-				jg .zero
-				cmp r10, rax
-				jg .zero
+				cvtsi2ss xmm3, ebx
+				shufps xmm3, xmm3, 00000000
 
 				pxor xmm15, xmm15
+
+				;Al principio del ciclo se checkea si el
+				;puntero de escritura apunta a algun borde.
+				;Si es asi se salta para escribir pixeles
+				;negros, sino se procede al procesamiento
+
+	.riquelme:	cmp rcx, 2
+				jle .zero1
+				cmp rcx, r15
+				jg .zero1
+				cmp r10, 2
+				jle .zero2
+				cmp r10, rax
+				jg .zero2
+
+				;Primero se cargan de memoria 20 pixeles
+				;para poder procesar 4. Se desempaquetan
+				;a words los 2 pixeles mas bajos para poder
+				;sumar sin que se genere overflow. Tambien
+				;se hace una copia de los 4 pixeles para 
+				;luego desempaquetar los 2 mas altos
 				
 				movdqu xmm0, [rdi]
 				movdqa xmm10, xmm0
 				punpcklbw xmm0, xmm15
-				movdqa xmm1, xmm0
-				punpckhwd xmm1, xmm15
-				punpcklwd xmm0, xmm15
+				
 				movdqu xmm2, [rdi+r8+4]
 				movdqa xmm11, xmm2
 				punpcklbw xmm2, xmm15
-				movdqa xmm3, xmm2
-				punpckhwd xmm3, xmm15
-				punpcklwd xmm2, xmm15
+				
 				movdqu xmm4, [r8*2+rdi+8]
 				movdqa xmm12, xmm4
 				punpcklbw xmm4, xmm15
-				movdqa xmm5, xmm4
-				punpckhwd xmm5, xmm15
-				punpcklwd xmm4, xmm15
+				
 				movdqu xmm6, [rdi+r11+12]
 				movdqa xmm13, xmm6
 				punpcklbw xmm6, xmm15
-				movdqa xmm7, xmm6
-				punpckhwd xmm7, xmm15
-				punpcklwd xmm6, xmm15
+				
 				movdqu xmm8, [r8*4+rdi+16]
 				movdqa xmm14, xmm8
 				punpcklbw xmm8, xmm15
-				movdqa xmm9, xmm8
-				punpckhwd xmm9, xmm15
-				punpcklwd xmm8, xmm15
 
-				paddd xmm0, xmm2
-				paddd xmm0, xmm4
-				paddd xmm0, xmm6
-				paddd xmm0, xmm8
+				;Aca se suman 2 pixeles y luego
+				;se desempaquetan y se convierten
+				;a floats para dividirlos por 5
+				;Por ultimo se empaquetan a words
+				;nuevamente
 
-				paddd xmm1, xmm3
-				paddd xmm1, xmm5
-				paddd xmm1, xmm7
-				paddd xmm1, xmm9
+				paddw xmm0, xmm2
+				paddw xmm0, xmm4
+				paddw xmm0, xmm6
+				paddw xmm0, xmm8
+
+				movdqa xmm1, xmm0
+				punpckhwd xmm1, xmm15
+				punpcklwd xmm0, xmm15
 
 				cvtdq2ps xmm0, xmm0
 				cvtdq2ps xmm1, xmm1
 
-				movd xmm15, ebx
-				shufps xmm15, xmm15, 00000000
-
-				divps xmm0, xmm15
-				divps xmm1, xmm15
+				divps xmm0, xmm3
+				divps xmm1, xmm3
 
 				cvttps2dq xmm0, xmm0
 				cvttps2dq xmm1, xmm1
 				
 				packusdw xmm0, xmm1
 
-				pxor xmm15, xmm15
+				;Aca se procesan de igual forma
+				;los 2 pixeles altos de los 4
+				;traidos de la memoria
 
 				punpckhbw xmm10, xmm15
+				punpckhbw xmm11, xmm15
+				punpckhbw xmm12, xmm15
+				punpckhbw xmm13, xmm15
+				punpckhbw xmm14, xmm15
+
+				paddw xmm10, xmm11
+				paddw xmm10, xmm12
+				paddw xmm10, xmm13
+				paddw xmm10, xmm14
+ 	
 				movdqa xmm9, xmm10
 				punpckhwd xmm10, xmm15
 				punpcklwd xmm9, xmm15
 
-				punpckhbw xmm11, xmm15
-				movdqa xmm8, xmm11
-				punpckhwd xmm11, xmm15
-				punpcklwd xmm8, xmm15
-				
-				punpckhbw xmm12, xmm15
-				movdqa xmm7, xmm12
-				punpckhwd xmm12, xmm15
-				punpcklwd xmm7, xmm15
-				
-				punpckhbw xmm13, xmm15
-				movdqa xmm6, xmm13
-				punpckhwd xmm13, xmm15
-				punpcklwd xmm6, xmm15
-				
-				punpckhbw xmm14, xmm15
-				movdqa xmm5, xmm14
-				punpckhwd xmm14, xmm15
-				punpcklwd xmm5, xmm15
-
-				paddd xmm10, xmm11
-				paddd xmm10, xmm12
-				paddd xmm10, xmm13
-				paddd xmm10, xmm14
-
-				paddd xmm9, xmm8
-				paddd xmm9, xmm7
-				paddd xmm9, xmm6
-				paddd xmm9, xmm5
-
 				cvtdq2ps xmm10, xmm10
 				cvtdq2ps xmm9, xmm9
 
-				movd xmm15, ebx
-				shufps xmm15, xmm15, 00000000
-
-				divps xmm10, xmm15
-				divps xmm9, xmm15
+				divps xmm10, xmm3
+				divps xmm9, xmm3
 
 				cvttps2dq xmm10, xmm10
 				cvttps2dq xmm9, xmm9
 
 				packusdw xmm9, xmm10
+
+				;Se empaquetan los 4 pixeles a bytes
+				;y se cargan a memoria
 				
 				packuswb xmm0, xmm9
 
@@ -172,7 +165,10 @@ mblur_asm:
 				sub r10, 4
 				jmp .riquelme
 
-.zero:			mov qword[rsi], 0xF0000000F000000
+.zero1:			mov qword[rsi], 0xF0000000F000000
+				add rsi, 8 
+				sub r10, 2
+.zero2:			mov qword[rsi], 0xF0000000F000000
 				add rsi, 8 
 				sub r10, 2
 				cmp r10, 0

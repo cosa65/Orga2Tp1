@@ -85,8 +85,22 @@ En particular, se implementaron 4 filtros de im\'{a}genes: Cropflip, Sierpinski,
 \subsection{Explicaci\'{o}n de Implementaciones en assembler}
 
 \subsubsection{Cropflip}
+En el filtro Cropflip utilizamos aritm\'{e}tica de punteros para empezar a escribir en la \'{u}tima fila de la imagen destino mientras se lee de la primer fila de la parte a recortar de la imagen fuente. Al cambiar de fila, el puntero de escritura (\textit{rsi}) decrece, mientras que el de lectura crece (\textit{rdi}). A su vez, utilizamos 3 contadores: De Bytes horizontales (\textit{r11}), de Bytes verticales (\textit{EAX}) y \textit{r10} como backup de \textit{rbx}, para cuando es modificado. \'{E}ste \'{u}ltimo sirve. El SIMD es aprovechado al m\'{a}ximo, ya el movimiento es de a 4 p\'{i}xeles.
 
 \subsubsection{Sierpinski}
+El filtro Sierpisnki es procesado de la siguiente manera:
+
+\begin{itemize}
+\item Cargamos de la memoria 4 p\'{i}xeles, los desempaquetamos a dwords y luego los convertimos a floats, para poder calcular el \textit{coef}de cada uno. Quedan entonces en \textit{xmm0}, \textit{xmm1}, \textit{xmm2} y \textit{xmm3}, con sus componentes como floats.\\
+
+\item Luego, para calcular el coef de cada p\'{i}xel, utilizamos valores ya cargados antes del ciclo (Por ejemplo \textit{255/cols} en \textit{xmm12} y \textit{255/filas} en \textit{xmm11}). \\
+
+\item Se multiplica el coef por todos los componentes de cada pixel al mismo tiempo utilizando SIMD. \\
+
+\item Por \'{u}ltimo se convierten y empaquetan estos 4 p\'{i}xeles a Bytes, guardados en \textit{xmm0}, y desde all\'{i} son almacenados al destino. 
+
+\end{itemize}
+
 
 \subsubsection{Bandas}
 
@@ -99,26 +113,46 @@ El filtro Bandas lo intentamos implementar tres veces. En esas tres fuimos varia
 \item Con m\'{a}scaras: \\ \\
 Finalmente, por consejo de algunos docentes, decidimos implementar el ejercicio con el uso de m\'{a}scaras. La idea es, en cada iteraci\'{o}n: \\
 \begin{itemize}
-\item Levantar dos p\'{i}xeles en un XMM pasando R, G, B y A a Words.\\
-\item Luego en otros dos XMM hacer rotaciones para que queden alineados verticalmente los R, G y B de ambos p\'{i}xeles. \\
-\item Con una suma vertical (paddw) obtenemos un XMM con las sumas R+G+B de ambos p\'{i}xeles. Luego con dos pshufw hacemos 'broadcast' de la suma en sus respectivas partes. (Este proceso lo hacemos dos veces por ciclo, para trabajar con 4 p\'{i}xeles por iteraci\'{o}n).\newpage
+\item Levantar cuatro p\'{i}xeles en un XMM.\\
+\item Luego en otros dos XMM hacer rotaciones para que queden alineados verticalmente los R, G y B de los cuatro p\'{i}xeles. \\
+\item Haciendo un pand con \textit{xmm10} pasamos los 4 p\'{i}xeles por una m\'{a}scara tal que hayan ceros en todo el registro, excepto en los R, G y B alineados
+\item Con una suma vertical (padd) obtenemos un XMM con las sumas R+G+B de los 4 p\'{i}xeles
+
+
+\item Luego, en lugar de hacer el branching innecesario, utilizamos '\textit{pcmpgtw}' para compararlos con 4 m\'{a}scaras que contengan 95, 287, 479 y 671. De esta forma, obtenemos m\'{a}scaras que contienen unos en aquellos dwords que son mayores, y ceros donde son menores o iguales. \\
+\
+\item La idea es que, como nosotros ya sabemos el n\'{u}mero que tiene el registro antes de aplicar 
+cada m\'{a}scara, podemos hacer m\'{a}scaras espec\'{i}ficas para llevar ese n\'{u}mero al resultado deseado. Antes de aplicarla, le hacemos \textit{and} con el resultado de la comparaci\'{o}n. Si \'{e}ste es 0, entonces la m\'{a}scara no afectar\'{a} el resultado.\\
+\item Finalmente utilizamos \textit{pshufb} para hacer convertir cada dword en cuatro Bytes iguales, tal que R=G=B=A=Suma. \\
+\begin{table}[h]
+\center
+Luego de rotar y pasar por la m\'{a}scara, quedar\'{i}a de esta forma:
+\begin{tabular}{lllllllllllllllll}
+                           & $_0$                       &                        &                        &                        &                            &                        &                        &                        &                            &                        &                        &                        &                            &                        &                        & $_1$$_2$$_7$                    \\ \hline
+\multicolumn{1}{|l|}{XMM0} & \multicolumn{1}{l|}{$B_1$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{$B_2$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{$B_3$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{$B_4$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} \\ \hline
+\multicolumn{1}{|l|}{XMM1} & \multicolumn{1}{l|}{$G_1$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{$G_2$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{$G_3$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{$G_4$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} \\ \hline
+\multicolumn{1}{|l|}{XMM2} & \multicolumn{1}{l|}{$R_1$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{$R_2$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{$R_3$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{$R_4$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} \\ \hline
+\end{tabular}
+\end{table}
 
 \begin{table}[h]
 \center
-\begin{tabular}{|l|l|l|l|l|l|l|l|}
-\hline
-$R_1$    & $G_1$    & $B_1$    & $A_1$   & $R_2$    & $G_2$    & $B_2$    & $A_2$ \\ \hline
-$G_1$    & $B_1$    & $A_1$    & $R_2$    & $G_2$    & $B_2$    & $A_2$    & 0  \\ \hline
-$B_1$    & $A_1$    & $R_2$    & $G_2$    & $B_2$    & $A_2$    & 0     & 0  \\ \hline
-$SUMA_1$ & X     & X     & X     & $SUMA_2$ & X     & X     & X  \\ \hline
-$SUMA_1$ & $SUMA_1$ & $SUMA_1$ & $SUMA_1$ & $SUMA_2$ & $SUMA_2$ & $SUMA_2$ & $SUMA_2$   \\ \hline
+Luego de sumar verticalmente:
+\begin{tabular}{lllllllllllllllll}
+                           & $_0$                       &                        &                        &                        &                            &                        &                        &                        &                            &                        &                        &                        &                            &                        &                        & $_1$$_2$$_7$                    \\ \hline
+\multicolumn{1}{|l|}{XMM0} & \multicolumn{1}{l|}{$S_1$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{$S_2$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{$S_3$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{$S_4$} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} & \multicolumn{1}{l|}{0} \\ \hline
 \end{tabular}
-\end{table} 
+\end{table}
 
-\item Luego, en lugar de hacer el branching innecesario, utilizamos 'pcmpgtw' para compararlos con 4 m\'{a}scaras que contengan 96, 288, 480 y 672 en Words. De esta forma, obtenemos m\'{a}scaras que contienen unos en aquellos words que son mayores, y ceros donde son menores o iguales. \\
-\item Aplicando restas, pasamos de tener dos m\'{a}scaras que nos indican (x < 96) y (x < 288) a tener una que nos indica (96 <= x < 288) (Por dar un ejemplo). \\
-\item A estas m\'{a}scaras les aplicamos la instrucci\'{o}n pandw junto con una m\'{a}scara con el resultado correspondiente (en este caso 64) para obtener ese resultado en los words donde hab\'{i}an unos, y ceros en caso contrario. Sumando todas estas m\'{a}scaras finales obtenemos el resultado final, en words. \\
-\item Con un simple 'packusdw' transformamos estos dos XMM con los resultados finales en words, en uno solo que tiene los 4 p\'{i}xeles a guardar, en Bytes. \\
+\begin{table}[h]
+\center
+Y al aplicar \textit{pshufb}:
+\begin{tabular}{lllllllllllllllll}
+                           & $_0$                       &                        &                        &                        &                            &                        &                        &                        &                            &                        &                        &                        &                            &                        &                        & $_1$$_2$$_7$                    \\ \hline
+\multicolumn{1}{|l|}{XMM0} & \multicolumn{1}{l|}{$S_1$} & \multicolumn{1}{l|}{$S_1$} & \multicolumn{1}{l|}{$S_1$} & \multicolumn{1}{l|}{$S_1$} & \multicolumn{1}{l|}{$S_2$} & \multicolumn{1}{l|}{$S_2$} & \multicolumn{1}{l|}{$S_2$} & \multicolumn{1}{l|}{$S_2$} & \multicolumn{1}{l|}{$S_3$} & \multicolumn{1}{l|}{$S_3$} & \multicolumn{1}{l|}{$S_3$} & \multicolumn{1}{l|}{$S_3$} & \multicolumn{1}{l|}{$S_4$} & \multicolumn{1}{l|}{$S_4$} & \multicolumn{1}{l|}{$S_4$} & \multicolumn{1}{l|}{$S_4$} \\ \hline
+\end{tabular}
+\end{table}
+
 El uso de m\'{a}scaras no s\'{o}lo result\'{o} ser m\'{a}s claro, sino que tambi\'{e}n demostr\'{o} ser altamente eficiente en comparaci\'{o}n con el branching excesivo y las cuentas de punto flotante.
 \end{itemize}
 \end{itemize}
@@ -200,11 +234,12 @@ NOTA: las l\'{i}neas peque\~nas azules en el tope de las barras representan el d
 
 Se observa en este experimento una notoria ventaja (en eficiencia temporal) del procesamiento vectorial de datos sobre el secuencial, incluso luego de haber aplicado las optimizaciones sobre el secuencial (que redujeron mucho el tiempo de procesamiento) la implementaci\'{o}n de assembler pudo aplicar el filtro mucho m\'{a}s r\'{a}pido y de manera m\'{a}s efectiva, mientras que entre las optimizaciones O2-O3 no hubo diferencia casi, indicando que no parece ser posible optimizar mucho m\'{a}s la implementaci\'{o}n en C.\\ \\ \\ \\
 
+\newpage
 
 \textbf{Experimento 1.5) Cropflip - cpu vs bus de memoria}\\ \\
 
 blablalbla pregrafico
-
+\includegraphics[width=300pt]{imagenes/bvmcrop.png}
 blablabla postgrafico \\ \\ \\ \\
 
 \subsubsection{Sierpinski}
@@ -229,6 +264,8 @@ Este experimento comparar\'{a} la performance de las implementaciones C y assemb
 En este experimento la ventaja de usar SIMD sigui\'{o} not\'{a}ndose con fuerza, mostrando una gran diferencia cuando es contrastado su tiempo de ejecuci\'{o}n con el de las distintas optimizaciones de la implementaci\'{o}n en C, si bien en este caso se not\'{o} que la optimizaci\'{o}n O3 tiene un gran impacto comparada con la O2. \\ \\ \\ \\
 
 \textbf{Experimento 2.1) Sierpinski - cpu vs bus de memoria}\\ \\
+
+\includegraphics[width=300pt]{imagenes/bvmcrop.png}
 
 \newpage
 
@@ -268,7 +305,7 @@ Este experimento comparar\'{a} la performance de las implementaciones C y assemb
 
 \begin{itemize}
 
-\item \textbf{asm-}  2030949 ciclos
+\item \textbf{asm-}  1577304 ciclos
 \item \textbf{C O3-} 4698057 ciclos\\
 \item \textbf{C O2-} 4889967 ciclos\\
 \item \textbf{C O1-} 5513945 ciclos\\
@@ -282,9 +319,8 @@ En este experimento, nuevamente, la implementaci\'{o}n de assembler mostr\'{o} u
 
 \newpage
 
-
-\section{Enunciado y solucion} 
-\input{enunciado}
+%\section{Enunciado y solucion} 
+%\input{enunciado}
 
 \section{Conclusiones y trabajo futuro}
 

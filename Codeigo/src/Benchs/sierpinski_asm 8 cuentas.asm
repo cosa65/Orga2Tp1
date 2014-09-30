@@ -14,15 +14,8 @@ sierpinski_asm:
     	
 			push rbp
 			mov rbp, rsp
-
-			add rax, r11
-			sub r11, r10
-			add r10, 10
-			sub rax, 0x0A
-			add rax, r11
-			sub r11, r10
-			add r10, 10
-			sub rax, 0x0A
+			push r13
+			push r12
 
 			and r9, 4294967295
 			and r8, 4294967295
@@ -134,6 +127,15 @@ sierpinski_asm:
 			packusdw xmm2, xmm3
 			packuswb xmm0, xmm2
 
+			add r12, r13
+			sub r13, r12
+			add r12, 10
+			sub r13, 0x0A
+			add r12, r13
+			sub r13, r12
+			add r12, 10
+			sub r13, 0x0A
+			
 			movdqu [rax], xmm0
 
 			sub r10, 4
@@ -152,5 +154,7 @@ sierpinski_asm:
 			cmp rcx, 0
 			jne .cicloni
 
+			pop r12
+			pop r13
 			pop rbp
     		ret

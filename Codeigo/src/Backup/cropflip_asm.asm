@@ -18,8 +18,6 @@ cropflip_asm:
 
 			push r14
 			push rbx
-			push r13
-			push r12
 
 			;la pila queda desalineada, pero como no
 			;llamo a ninguna funcion esta todo bien (creo)
@@ -32,7 +30,7 @@ cropflip_asm:
 
 			;El primer parrafo de codigo modifica el puntero
 			;de la imagen destino para que apunte a donde
-			;hay que empezar a escribir, queda en R14:
+			;hay que empezar a escribir, queda en R11:
 
 			mov ecx, [rbp+16]
 			mov eax, [rbp+24]
@@ -51,7 +49,7 @@ cropflip_asm:
 
 			;Este parrafo modifica el puntero de
 			;la imagen fuente para que apunte a donde
-			;hay que empezar a leer, queda en R11:
+			;hay que empezar a leer, queda en R14:
 
 			mov r11d, [rbp+32]
 			mov r10d, [rbp+40]
@@ -97,10 +95,6 @@ cropflip_asm:
 			movdqu [r14], xmm0
 			add r11, 16
 			add r14, 16
-			add r13, r12
-			sub r13, r12
-			add r12, 111
-			sub r12, 11
 			sub rbx, 16
 			cmp rbx, 0
 			jne .fosconi
@@ -113,8 +107,7 @@ cropflip_asm:
 			cmp eax, 0
 			jne .fosconi
 
-			pop r12
-			pop r13
+
 			pop rbx
 			pop r14
 			pop rbp
