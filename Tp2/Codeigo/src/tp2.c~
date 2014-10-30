@@ -122,12 +122,12 @@ void imprimir_tiempos_ejecucion(unsigned long long int start, unsigned long long
 
 	FILE* archivo = fopen("tiempos.txt", "a");
 
-/*	fprintf(archivo, "Tiempo de ejecución:\n");
+	fprintf(archivo, "Tiempo de ejecución:\n");
 	fprintf(archivo, "  Comienzo                          : %llu\n", start);
 	fprintf(archivo, "  Fin                               : %llu\n", end);
 	fprintf(archivo, "  # iteraciones                     : %d\n", cant_iteraciones);
 	fprintf(archivo, "  # de ciclos insumidos totales     : %llu\n", cant_ciclos);*/
-	fprintf(archivo, /*"  # de ciclos insumidos por llamada :*/" %.3f\n", (float)cant_ciclos/(float)cant_iteraciones);
+	fprintf(archivo, /*"  # de ciclos insumidos por llamada :*/"%.3f\n", (float)cant_ciclos/(float)cant_iteraciones);
 }
 
 
