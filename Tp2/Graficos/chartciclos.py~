@@ -20,9 +20,9 @@ colour = ['black', 'darkgreen']
 
 
 
-plt.barh(y_pos, tiempos, xerr=desviosEstandar, align='center', alpha=0.8, color = colour, picker = 1)
-plt.yticks(y_pos, nombres)
-plt.xlabel('Tiempos (ciclos)')
+plt.bar(y_pos, tiempos, xerr=desviosEstandar, align='center', alpha=0.8, color = colour, picker = 1)
+plt.xticks(y_pos, nombres)
+plt.ylabel('Tiempos (ciclos)')
 
 for i,j in zip(tiempos,y_pos):
     plt.annotate(str(tiempos[j]),xy=(i,j+0.2))
